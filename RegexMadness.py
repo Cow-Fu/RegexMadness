@@ -31,10 +31,10 @@ class FakeRegex:
 
     def getRandomLookBehind(self):
         looker = self.lookBehind[0]
-        n = self.word[self.index]
+        n = self.word[:self.index]
         while True:
             char = choice(self.safeChars)
-            if not char == n:
+            if not char in n:
                 return looker.format(char)
 
     def getAheadOrBehind(self):
@@ -48,6 +48,7 @@ class FakeRegex:
     def generate(self):
         regex = ""
         options = [self.getRandomSafeChar, self.getRandomMultiLetter, self.getAheadOrBehind]
+        # options = [self.getRandomSafeChar, self.getRandomMultiLetter]
         while not self.index >= self.length:
             if randrange(15) == 1:
                 regex += self.word[self.index]
