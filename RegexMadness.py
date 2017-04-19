@@ -45,24 +45,27 @@ class FakeRegex:
             return self.getRandomLookBehind()
         return self.getRandomLookAhead() if randrange(20) < 10 else self.getRandomLookBehind(self.index)
 
-    def generate(self):
+    def generate(self, oneInX=15):
         regex = ""
         options = [self.getRandomSafeChar, self.getRandomMultiLetter, self.getAheadOrBehind]
         # options = [self.getRandomSafeChar, self.getRandomMultiLetter]
         while not self.index >= self.length:
-            if randrange(15) == 1:
+            if randrange(oneInX) == 0:
                 regex += self.text[self.index]
                 self.index += 1
                 continue
             regex += choice(options)()
         return regex
 
-    def __init__(self, text):
-        self.safeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789 "
+    def setText(self, text):
         self.text = list(map(lambda x: x if x in self.safeChars else "\\{}".format(x), text))
         self.length = len(self.text)
         self.index = 0
-        # self.unusedChars = list(filter(lambda x: not x in self.text, self.safeChars))
+        return self
+
+
+    def __init__(self):
+        self.safeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789 "
         self.multiLetterOptions = ["[{}]?", "(?#{})"]
 
         self.lookAhead = [
@@ -75,15 +78,15 @@ class FakeRegex:
         "(?<!{})"    # negitive
         ]
 
-        print(self.generate())
-
-
 if __name__ == '__main__':
     from argparse import ArgumentParser
 
     parser = ArgumentParser()
     parser.add_argument("text", nargs="*", help="The text to regexify")
+    parser.add_argument("-c", type=int, help="Chance of random useless regex (higher is longer)")
 
     args = vars(parser.parse_args())
+    chance = args["c"] if args["c"] else 15
 
-    FakeRegex(" ".join(args["text"]))
+
+    print(FakeRegex().setText(" ".join(args["text"])).generate(chance))
