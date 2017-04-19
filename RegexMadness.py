@@ -3,8 +3,8 @@ from random import choice, randint, randrange
 class FakeRegex:
 
     def getRandomSafeChar(self):
-        """Returns an alphanumeric character not at the current index of the self.word"""
-        n = self.word[self.index]
+        """Returns an alphanumeric character not at the current index of the self.text"""
+        n = self.text[self.index]
         while True:
             char = choice(self.safeChars)
             if not char == n:
@@ -14,7 +14,7 @@ class FakeRegex:
         m = choice(self.multiLetterOptions)
         # if not m == self.multiLetterOptions[0] and randint(0, 20) < 15:
         #     return m.format(self.getRandomMultiLetter())
-        n = self.word[self.index]
+        n = self.text[self.index]
         chars = ""
         for i in range(randint(1, 10)):
             while True:
@@ -27,11 +27,11 @@ class FakeRegex:
 
     def getRandomLookAhead(self):
         looker = self.lookAhead[0]
-        return looker.format(choice(self.word[self.index:]))
+        return looker.format(choice(self.text[self.index:]))
 
     def getRandomLookBehind(self):
         looker = self.lookBehind[0]
-        n = self.word[:self.index]
+        n = self.text[:self.index]
         while True:
             char = choice(self.safeChars)
             if not char in n:
@@ -51,18 +51,18 @@ class FakeRegex:
         # options = [self.getRandomSafeChar, self.getRandomMultiLetter]
         while not self.index >= self.length:
             if randrange(15) == 1:
-                regex += self.word[self.index]
+                regex += self.text[self.index]
                 self.index += 1
                 continue
             regex += choice(options)()
         return regex
 
-    def __init__(self, word):
+    def __init__(self, text):
         self.safeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789 "
-        self.word = list(map(lambda x: x if x in self.safeChars else "\\{}".format(x), word))
-        self.length = len(self.word)
+        self.text = list(map(lambda x: x if x in self.safeChars else "\\{}".format(x), text))
+        self.length = len(self.text)
         self.index = 0
-        # self.unusedChars = list(filter(lambda x: not x in self.word, self.safeChars))
+        # self.unusedChars = list(filter(lambda x: not x in self.text, self.safeChars))
         self.multiLetterOptions = ["[{}]?", "(?#{})"]
 
         self.lookAhead = [
@@ -79,4 +79,11 @@ class FakeRegex:
 
 
 if __name__ == '__main__':
-    FakeRegex([i for i in input("Enter the word to match: ")])
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser()
+    parser.add_argument("text", nargs="*", help="The text to regexify")
+
+    args = vars(parser.parse_args())
+
+    FakeRegex(" ".join(args["text"]))
