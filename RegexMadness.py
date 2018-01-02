@@ -12,8 +12,6 @@ class FakeRegex:
 
     def getRandomMultiLetter(self):
         m = choice(self.multiLetterOptions)
-        # if not m == self.multiLetterOptions[0] and randint(0, 20) < 15:
-        #     return m.format(self.getRandomMultiLetter())
         n = self.text[self.index]
         chars = ""
         for i in range(randint(1, 10)):
@@ -31,11 +29,9 @@ class FakeRegex:
 
     def getRandomLookBehind(self):
         looker = self.lookBehind[0]
-        n = self.text[:self.index]
-        while True:
-            char = choice(self.safeChars)
-            if not char in n:
-                return looker.format(char)
+
+        chars = set(self.safeChars) - set(filter(lambda x: x.isalnum() or x == " ", self.text[:self.index]))
+        return looker.format(choice(list(chars)))
 
     def getAheadOrBehind(self):
         # return self.getRandomLookAhead()
