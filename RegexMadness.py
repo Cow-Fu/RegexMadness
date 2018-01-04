@@ -1,7 +1,8 @@
 from random import choice, randint, randrange
+from Builders import
+
 
 class FakeRegex:
-
     def getRandomSafeChar(self):
         """Returns an alphanumeric character not at the current index of the self.text"""
         n = self.text[self.index]
@@ -59,7 +60,6 @@ class FakeRegex:
         self.index = 0
         return self
 
-
     def __init__(self):
         self.safeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789 "
         self.multiLetterOptions = ["[{}]?", "(?#{})"]
@@ -74,6 +74,7 @@ class FakeRegex:
         "(?<!{})"    # negitive
         ]
 
+
 if __name__ == '__main__':
     from argparse import ArgumentParser
 
@@ -83,6 +84,5 @@ if __name__ == '__main__':
 
     args = vars(parser.parse_args())
     chance = args["c"] if args["c"] else 15
-
 
     print(FakeRegex().setText(" ".join(args["text"])).generate(chance))
